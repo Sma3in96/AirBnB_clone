@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ creating cmd interpreter """
 import cmd
+import sys
 """from models.base_model import BaseModel
 import json"""
 
@@ -27,4 +28,8 @@ class HBNBCommand(cmd.Cmd):
 
 
 if __name__ == '__main__':
+    if sys.stdin.isatty():
+        HBNBCommand.prompt = "(HBNB) "
+    else:
+        HBNBCommand.prompt = ""
     HBNBCommand().cmdloop()

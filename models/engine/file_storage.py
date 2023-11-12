@@ -26,7 +26,7 @@ class FileStorage:
             json.dump(temp_dict, file_open)
 
     def reload(self):
-        
+
         dct_class = {'BaseModel': BaseModel, 'User': User}
         file_path = FileStorage.__file_path
 
