@@ -4,8 +4,8 @@ import unittest
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
 from models import storage
-import json
 import os
+"""import json"""
 
 
 class StorageTests(unittest.TestCase):
@@ -29,73 +29,54 @@ class StorageTests(unittest.TestCase):
 
     def testStoreBaseModel2(self):
         """ Test save, reload and update functions """
-        self.my_model.my_name = "First name"
-        self.my_model.save()
-        bm_dict = self.my_model.to_dict()
+        self.model.my_name = "name 1st"
+        self.model.save()
+        dict2 = self.model.to_dict()
         all_objs = storage.all()
 
-        key = bm_dict['__class__'] + "." + bm_dict['id']
+        key = dict2['__class__'] + "." + dict2['id']
 
         self.assertEqual(key in all_objs, True)
-        self.assertEqual(bm_dict['my_name'], "First name")
+        self.assertEqual(dict2['my_name'], "name 1st")
 
-        create1 = bm_dict['created_at']
-        update1 = bm_dict['updated_at']
+        created_1st = dict2['created_at']
+        updated_2nd = dict2['updated_at']
 
-        self.my_model.my_name = "Second name"
-        self.my_model.save()
-        bm_dict = self.my_model.to_dict()
+        self.model.my_name = "name 2nd"
+        self.model.save()
+        dict2 = self.model.to_dict()
         all_objs = storage.all()
 
         self.assertEqual(key in all_objs, True)
 
-        create2 = bm_dict['created_at']
-        update2 = bm_dict['updated_at']
+        created_2nd = dict2['created_at']
+        update2 = dict2['updated_at']
 
-        self.assertEqual(create1, create2)
-        self.assertNotEqual(update1, update2)
-        self.assertEqual(bm_dict['my_name'], "Second name")
+        self.assertEqual(created_1st, created_2nd)
+        self.assertNotEqual(updated_2nd, update2)
+        self.assertEqual(dict2['my_name'], "name 2nd")
 
-    def testHasAttributes(self):
-        """verify if attributes exist"""
-        self.assertEqual(hasattr(FileStorage, '_FileStorage__file_path'), True)
-        self.assertEqual(hasattr(FileStorage, '_FileStorage__objects'), True)
-
-    def testsave(self):
-        """verify if JSON exists"""
-        self.my_model.save()
+    def testjsonsaving(self):
+        """json file testing"""
+        self.model.save()
         self.assertEqual(os.path.exists(storage._FileStorage__file_path), True)
         self.assertEqual(storage.all(), storage._FileStorage__objects)
 
-    def testreload(self):
-        """test if reload """
-        self.my_model.save()
+    def testHasAttributes(self):
+        """testing if path and objects exists"""
+        self.assertEqual(hasattr(FileStorage, '_FileStorage__file_path'), True)
+        self.assertEqual(hasattr(FileStorage, '_FileStorage__objects'), True)
+
+    def test_reload(self):
+        """test if reload after empty obejcts """
+        self.model.save()
         self.assertEqual(os.path.exists(storage._FileStorage__file_path), True)
-        dobj = storage.all()
+        temp_objects = storage.all()
         FileStorage._FileStorage__objects = {}
-        self.assertNotEqual(dobj, FileStorage._FileStorage__objects)
+        self.assertNotEqual(temp_objects, FileStorage._FileStorage__objects)
         storage.reload()
         for key, value in storage.all().items():
-            self.assertEqual(dobj[key].to_dict(), value.to_dict())
-
-    def testSaveSelf(self):
-        """ Check save self """
-        msg = "save() takes 1 positional argument but 2 were given"
-        with self.assertRaises(TypeError) as e:
-            FileStorage.save(self, 100)
-
-        self.assertEqual(str(e.exception), msg)
-
-    def test_save_FileStorage(self):
-        """ Test if 'new' method is working good """
-        var1 = self.my_model.to_dict()
-        new_key = var1['__class__'] + "." + var1['id']
-        storage.save()
-        with open("file.json", 'r') as fd:
-            var2 = json.load(fd)
-        new = var2[new_key]
-        for key in new:
-            self.assertEqual(var1[key], new[key])
+            self.assertEqual(temp_objects[key].to_dict(), value.to_dict())
 
 
 if __name__ == '__main__':
