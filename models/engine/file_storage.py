@@ -5,22 +5,22 @@ import os
 
 
 class FileStorage:
-    __file_chemin = "store.json"
-    __dict_obj = {}
+    __file_path = "store.json"
+    __objects = {}
 
     def new(self, obj):
         k = obj.__class__.__name__ + "." + obj.id
-        FileStorage.__dict_obj[k] = obj
+        FileStorage.__objects[k] = obj
 
     def all(self):
-        return FileStorage.__dict_obj
+        return FileStorage.__objects
 
     def save(self):
         temp_dict = {}
 
-        for k, v in FileStorage.__dict_obj.items():
+        for k, v in FileStorage.__objects.items():
             temp_dict[k] = v.to_dict()
-        with open(FileStorage.__file_chemin, 'w') as file_open:
+        with open(FileStorage.__file_path, 'w') as file_open:
             json.dump(temp_dict, file_open)
 
     def reload(self):
