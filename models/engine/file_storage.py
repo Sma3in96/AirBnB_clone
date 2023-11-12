@@ -31,7 +31,14 @@ class FileStorage:
         """ reload a object"""
         from models.base_model import BaseModel
         from models.user import User
-        dct_class = {'BaseModel': BaseModel, 'User': User}
+        from models.amenity import Amenity
+        from models.state import State
+        from models.review import Review
+        from models.place import Place
+        from models.city import City
+        dct_class = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                     'City': City, 'Amenity': Amenity, 'State': State,
+                     'Review': Review}
         file_path = FileStorage.__file_path
 
         if os.path.exists(file_path):
