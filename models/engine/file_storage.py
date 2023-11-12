@@ -3,21 +3,25 @@
 import json
 import os
 from models.base_model import BaseModel
-from models.user import User
+from models.user import user
 
 
 class FileStorage:
+    """class of FileStorage"""
     __file_path = "store.json"
     __objects = {}
 
     def new(self, obj):
+        """methode that create a new obj"""
         k = obj.__class__.__name__ + "." + obj.id
         FileStorage.__objects[k] = obj
 
     def all(self):
+        """ return all objects"""
         return FileStorage.__objects
 
     def save(self):
+        """ save the objects into a json"""
         temp_dict = {}
 
         for k, v in FileStorage.__objects.items():
@@ -26,8 +30,8 @@ class FileStorage:
             json.dump(temp_dict, file_open)
 
     def reload(self):
-
-        dct_class = {'BaseModel': BaseModel, 'User': User}
+        """ reload a object"""
+        dct_class = {'BaseModel': BaseModel, 'User': user}
         file_path = FileStorage.__file_path
 
         if os.path.exists(file_path):
