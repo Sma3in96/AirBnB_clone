@@ -1,30 +1,30 @@
 #!/usr/bin/python3
-""" Module of Unittests """
+""" unitests """
 import unittest
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
 from models import storage
-import os
 import json
+import os
 
 
-class FileStorageTests(unittest.TestCase):
-    """ Suite of File Storage Tests """
+class StorageTests(unittest.TestCase):
+    """ testing storage write """
 
-    my_model = BaseModel()
+    model = BaseModel()
 
-    def testClassInstance(self):
-        """ Check instance """
+    def testInstance(self):
+        """ Check if storage is instance """
         self.assertIsInstance(storage, FileStorage)
 
-    def testStoreBaseModel(self):
-        """ Test save and reload functions """
-        self.my_model.full_name = "BaseModel Instance"
-        self.my_model.save()
-        bm_dict = self.my_model.to_dict()
+    def testStoreModel(self):
+        """ Testing save and reload """
+        self.model.full_name = "BaseModel Instance"
+        self.model.save()
+        dict1 = self.model.to_dict()
         all_objs = storage.all()
 
-        key = bm_dict['__class__'] + "." + bm_dict['id']
+        key = dict1['__class__'] + "." + dict1['id']
         self.assertEqual(key in all_objs, True)
 
     def testStoreBaseModel2(self):
