@@ -17,11 +17,11 @@ class HBNBCommand(cmd.Cmd):
         """ empty line entered"""
         pass
 
-    def do_quit(self):
+    def do_quit(self, line):
         """quit the console"""
         return True
 
-    def do_EOF(self):
+    def do_EOF(self, line):
         """end of file"""
         print()
         return True
