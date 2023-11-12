@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ creating cmd interpreter """
 import cmd
-import sys
 from shlex import split
 from models.base_model import BaseModel
 from models.user import User
@@ -17,6 +16,7 @@ from models import storage
 class HBNBCommand(cmd.Cmd):
     """class of hbnb prompt """
 
+    prompt = "(HBNB) "
     __dict_class = {'BaseModel': BaseModel, 'User': User, 'Amenity': Amenity,
                     'City': City, 'Place': Place,
                     'Review': Review, 'State': State}
@@ -75,8 +75,4 @@ class HBNBCommand(cmd.Cmd):
 
 
 if __name__ == '__main__':
-    if sys.stdin.isatty():
-        HBNBCommand.prompt = "(HBNB) "
-    else:
-        HBNBCommand.prompt = ""
     HBNBCommand().cmdloop()
