@@ -31,13 +31,13 @@ class UserCase(unittest.TestCase):
 
     def testing_type_of_attrib(self):
         """testing if attr has correct data type"""
-        self.assertIsInstance(self.user.first_name, str)
-        self.assertIsInstance(self.user.last_name, str)
-        self.assertIsInstance(self.user.email, str)
-        self.assertIsInstance(self.user.password, str)
-        self.assertIsInstance(self.user.id, str)
-        self.assertIsInstance(self.user.created_at, datetime.datetime)
-        self.assertIsInstance(self.user.updated_at, datetime.datetime)
+        self.assertIsInstance(self.user1.first_name, str)
+        self.assertIsInstance(self.user1.last_name, str)
+        self.assertIsInstance(self.user1.email, str)
+        self.assertIsInstance(self.user1.password, str)
+        self.assertIsInstance(self.user1.id, str)
+        self.assertIsInstance(self.user1.created_at, datetime.datetime)
+        self.assertIsInstance(self.user1.updated_at, datetime.datetime)
 
 
 if __name__ == '__main__':
