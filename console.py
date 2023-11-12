@@ -9,7 +9,7 @@ import json"""
 class HBNBCommand(cmd.Cmd):
     """class of hbnb prompt """
 
-    def help_help(self):
+    def help_help(self, line):
         """helps u on help"""
         print("Provides description of a given command")
 

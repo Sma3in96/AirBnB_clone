@@ -2,8 +2,6 @@
 """ file storage class creating """
 import json
 import os
-from models.base_model import BaseModel
-from models.user import user
 
 
 class FileStorage:
@@ -31,7 +29,9 @@ class FileStorage:
 
     def reload(self):
         """ reload a object"""
-        dct_class = {'BaseModel': BaseModel, 'User': user}
+        from models.base_model import BaseModel
+        from models.user import User
+        dct_class = {'BaseModel': BaseModel, 'User': User}
         file_path = FileStorage.__file_path
 
         if os.path.exists(file_path):
