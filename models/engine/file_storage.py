@@ -2,6 +2,8 @@
 """ file storage class creating """
 import json
 import os
+from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -24,9 +26,7 @@ class FileStorage:
             json.dump(temp_dict, file_open)
 
     def reload(self):
-        from models.base_model import BaseModel
-        from models.user import User
-
+        
         dct_class = {'BaseModel': BaseModel, 'User': User}
         file_path = FileStorage.__file_path
 
