@@ -15,7 +15,7 @@ from models import storage
 class HBNBCommand(cmd.Cmd):
     """class of hbnb prompt """
 
-    prompt = "(HBNB) "
+    prompt = "(hbnb) "
     __dict_class = {'BaseModel': BaseModel, 'User': User, 'Amenity': Amenity,
                     'City': City, 'Place': Place,
                     'Review': Review, 'State': State}
