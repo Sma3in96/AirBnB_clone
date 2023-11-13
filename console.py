@@ -55,11 +55,11 @@ class HBNBCommand(cmd.Cmd):
 
     def do_count(self, cls_name):
         """count"""
-        count = 0
+        counter = 0
         for obj in storage.all().values():
             if obj.__class__.__name__ == cls_name:
-                count = count + 1
-        print(count)
+                counter = counter + 1
+        print(counter)
 
     def do_create(self, classins):
         """ Creates an instance according to a given class """
