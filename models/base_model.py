@@ -25,13 +25,8 @@ class BaseModel:
 
     def __str__(self):
         """ str methode """
-        temp_dict = {}
-        for key, value in self.__dict__.items():
-            if (not value) is False:
-                temp_dict[key] = value
-        A = str(temp_dict)
-        B = "[" + self.__class__.__name__ + "]"
-        return B + " (" + self.id + ")" + A
+        name_of_class = self.__class__.__name__
+        return "[{}] ({}) {}".format(name_of_class, self.id, self.__dict__)
 
     def save(self):
         """ save methode """
