@@ -39,7 +39,7 @@ class testbasemodel(unittest.TestCase):
 
         self.assertEqual(dict1['created_at'], dict2['created_at'])
         self.assertNotEqual(dict2['updated_at'], dict1['updated_at'])
-    
+
     def test_repr(self):
         """ test __str__ """
 
