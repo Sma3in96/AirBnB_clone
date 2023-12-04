@@ -3,7 +3,6 @@
 
 import uuid
 from datetime import datetime
-from models import storage
 
 
 class BaseModel:
@@ -14,7 +13,6 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-            storage.new(self)
         else:
             dateformat = "%Y-%m-%dT%H:%M:%S.%f"
             for key, value in kwargs.items():
@@ -30,17 +28,16 @@ class BaseModel:
 
     def save(self):
         """ save methode """
+        from models.engine.file_storage import FileStorage
         self.updated_at = datetime.now()
+        storage = FileStorage()
+        storage.new(self)
         storage.save()
 
     def to_dict(self):
         """ to dict methode """
-        temp_dict2 = {}
-        dateformat = "%Y-%m-%dT%H:%M:%S.%f"
-        for k, v in self.__dict__.items():
-            if k == 'updated_at' or k == 'created_at':
-                temp_dict2[k] = v.strftime(dateformat)
-            elif v:
-                temp_dict2[k] = v
-        temp_dict2['__class__'] = self.__class__.__name__
-        return temp_dict2
+        model_dict = self.__dict__.copy()
+        model_dict['__class__'] = self.__class__.__name__
+        model_dict['created_at'] = self.created_at.isoformat()
+        model_dict['updated_at'] = self.updated_at.isoformat()
+        return model_dict
