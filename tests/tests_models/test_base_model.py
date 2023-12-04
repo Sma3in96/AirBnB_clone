@@ -39,6 +39,28 @@ class testbasemodel(unittest.TestCase):
 
         self.assertEqual(dict1['created_at'], dict2['created_at'])
         self.assertNotEqual(dict2['updated_at'], dict1['updated_at'])
+    
+    def test_repr(self):
+        """ test __str__ """
+
+        di = self.exemple.__dict__
+        answer = "[BaseModel] ({}) {}".format(self.exemple.id, di)
+        self.assertEqual(str(self.exemple), answer)
+
+    def test_to_dict(self):
+        """ tests to dict method"""
+
+        dicto = self.exemple.to_dict()
+        self.assertEqual(dicto['id'], self.exemple.id)
+        self.assertEqual(dicto['__class__'], 'BaseModel')
+        self.assertEqual(
+            dicto['created_at'],
+            self.exemple.created_at.isoformat()
+        )
+        self.assertEqual(
+            dicto['updated_at'],
+            self.exemple.updated_at.isoformat()
+        )
 
 
 if __name__ == '__main__':
