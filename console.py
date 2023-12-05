@@ -1,76 +1,169 @@
 #!/usr/bin/python3
-""" creating cmd interpreter """
+"""
+Command interpreter module
+"""
+
 import cmd
+from models import storage
 from models.base_model import BaseModel
-from models.user import User
-from models.amenity import Amenity
+from models.state import State
 from models.city import City
+from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from models.state import State
-from models import storage
-"""import json"""
+from models.user import User
+import shlex
+
+
+classes = {"BaseModel": BaseModel, "State": State, "City": City,
+           "Amenity": Amenity, "Place": Place, "Review": Review, "User": User}
 
 
 class HBNBCommand(cmd.Cmd):
-    """class of hbnb prompt """
+    """Command interpreter class"""
 
     prompt = "(hbnb) "
-    __dict_class = {'BaseModel': BaseModel, 'User': User, 'Amenity': Amenity,
-                    'City': City, 'Place': Place,
-                    'Review': Review, 'State': State}
 
-    def help_help(self, line):
-        """helps u on help"""
-        print("Provides description of a given command")
+    def do_quit(self, arg):
+        """Quit command to exit the program"""
+        return True
+
+    def do_EOF(self, arg):
+        """EOF command to exit the program"""
+        print("")
+        return True
 
     def emptyline(self):
-        """ empty line entered"""
+        """Handles empty line"""
         pass
 
-    def do_quit(self, line):
-        """quit the console"""
-        return True
-
-    def do_EOF(self, line):
-        """end of file"""
-        print()
-        return True
-
-    def do_show(self, line):
-        """show methode"""
-        arg = line.split()
-        objec_dict = storage.all()
-        if len(arg) == 0:
+    def do_create(self, arg):
+        """Create a new instance of BaseModel, saves it to JSON file"""
+        args = shlex.split(arg)
+        if not args:
             print("** class name missing **")
-        elif arg[0] not in HBNBCommand.__dict_class.key():
+        elif args[0] not in classes:
             print("** class doesn't exist **")
-        elif len(arg) == 1:
+        else:
+            new_instance = classes[args[0]]()
+            new_instance.save()
+            print(new_instance.id)
+
+    def do_show(self, arg):
+        """Prints the string representation of an instance"""
+        args = shlex.split(arg)
+        if not args:
+            print("** class name missing **")
+        elif args[0] not in classes:
+            print("** class doesn't exist **")
+        elif len(args) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(arg[0], arg[1]) not in objec_dict:
-            print("** no instance found **")
         else:
-            print(objec_dict["{}.{}".format(arg[0], arg[1])])
+            key = "{}.{}".format(args[0], args[1])
+            all_objects = storage.all()
+            if key not in all_objects:
+                print("** no instance found **")
+            else:
+                print(all_objects[key])
 
-    def do_count(self, cls_name):
-        """count"""
-        counter = 0
-        for obj in storage.all().values():
-            if obj.__class__.__name__ == cls_name:
-                counter = counter + 1
-        print(counter)
-
-    def do_create(self, classins):
-        """ Creates an instance according to a given class """
-
-        if not classins:
+    def do_destroy(self, arg):
+        """Deletes an instance based on the class name and id"""
+        args = shlex.split(arg)
+        if not args:
             print("** class name missing **")
-        elif classins not in HBNBCommand.__dict_class.keys():
+        elif args[0] not in classes:
+            print("** class doesn't exist **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        else:
+            key = "{}.{}".format(args[0], args[1])
+            all_objects = storage.all()
+            if key not in all_objects:
+                print("** no instance found **")
+            else:
+                del all_objects[key]
+                storage.save()
+
+    def do_all(self, arg):
+        """Prints all string representation of all instances"""
+        args = arg.split()
+        instances = []
+        if not args:
+            for key, value in storage.all().items():
+                instances.append(str(value))
+            print(instances)
+        elif args[0] not in storage.get_classes():
             print("** class doesn't exist **")
         else:
-            my_model = HBNBCommand.__dict_class[classins]()
-            print(my_model.id)
-            my_model.save()
+            for key, value in storage.all().items():
+                if args[0] == key.split('.')[0]:
+                    instances.append(str(value))
+            print(instances)
+
+    def do_update(self, arg):
+        """Updates an instance based on the class name and id"""
+        args = shlex.split(arg)
+        if not args:
+            print("** class name missing **")
+        elif args[0] not in classes:
+            print("** class doesn't exist **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        else:
+            key = "{}.{}".format(args[0], args[1])
+            all_objects = storage.all()
+            if key not in all_objects:
+                print("** no instance found **")
+            elif len(args) == 2:
+                print("** attribute name missing **")
+            elif len(args) == 3:
+                print("** value missing **")
+            else:
+                setattr(all_objects[key], args[2], args[3])
+                storage.save()
+
+    def do_count(self, arg):
+        """Retrieves the number of instances of a class"""
+        args = shlex.split(arg)
+        if not args:
+            print("** class name missing **")
+            return
+
+        class_name = args[0]
+        if class_name not in classes:
+            print("** class doesn't exist **")
+            return
+
+        instances = storage.count(class_name)
+        print(instances)
+
+    def do_User(self, line):
+        """Handles commands related to the User class"""
+        args = line.split()
+        if args and args[0] == 'count':
+            count = storage.count('User')
+            print(count)
+
+    def do_all_with_method(self, arg):
+        """Prints all instances of a class using <class name>.all() syntax"""
+        args = arg.split()
+        if len(args) != 1:
+            print("** Unknown syntax: {}.all()".format(args[0]))
+            return
+        class_name = args[0]
+        if class_name not in storage.get_classes():
+            print("** class doesn't exist **")
+        else:
+            instances = storage.get_classes()[class_name].__name__
+            print(storage.all_by_class(instances))
+
+    def default(self, line):
+        """Called on an input line when the command pr"""
+        parts = line.split(".")
+        if len(parts) == 2 and parts[1] == "all()":
+            self.do_all_with_method(parts[0])
+        else:
+            print("*** Unknown syntax: {}".format(line))
 
 
 if __name__ == '__main__':
